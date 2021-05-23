@@ -11,15 +11,22 @@
             border: 1px solid black;
             position: absolute;
         }
+
+        img {
+            display: none;
+        }
     </style>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/6.21.1/babel.min.js">
     </script>
 </head>
 
 <body>
+    <script type="text/babel" src="drawEngine.js"></script>
+    <script type="text/babel" src="dialogEngine.js"></script>
     <script type="text/babel" src="main.js">
     </script>
-    <img id="background" src="block.png" style="display: none;" />
+    <img id="background" src="images/block_map.png" />
+    <img id="dialog" src="images/plate.png" />
 </body>
 
 </html>

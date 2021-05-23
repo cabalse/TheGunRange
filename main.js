@@ -7,10 +7,41 @@
 const CANVAS_WIDTH = 814;
 const CANVAS_HEIGHT = 566;
 
+const images = [{
+        image: document.getElementById("background"),
+        sx: 0,
+        sy: 0,
+        sWidth: 127,
+        sHeight: 63,
+        dWidth: 127,
+        dHeight: 63
+    },
+    {
+        image: document.getElementById("background"),
+        sx: 125,
+        sy: 0,
+        sWidth: 64,
+        sHeight: 63,
+        dWidth: 64,
+        dHeight: 63
+    },
+    {
+        image: document.getElementById("dialog"),
+        sx: 0,
+        sy: 0,
+        sWidth: 2058,
+        sHeight: 394,
+        dWidth: 790,
+        dHeight: 152
+    },
+];
+
 class Game {
     constructor() {
+        this.dialogs = new DialogEngine(CANVAS_WIDTH, CANVAS_HEIGHT, "canvas");
         this.initCanvas();
         this.initEventListerners();
+        this.backgroundDrawEngine = new DrawEngine(this.backgroundContext, images);
     }
     initCanvas() {
         this.canvas = document.createElement("canvas");
@@ -32,11 +63,11 @@ class Game {
         let ctx = this.backgroundContext;
 
         const fullBlock = (x, y) => {
-            ctx.drawImage(document.getElementById("background"), 0, 0, 127, 63, x, y, 127, 63)
+            this.backgroundDrawEngine.drawImage(0, x, y);
         };
 
         const halfBlock = (x, y) => {
-            ctx.drawImage(document.getElementById("background"), 125, 0, 64, 63, x, y, 64, 63)
+            this.backgroundDrawEngine.drawImage(1, x, y);
         };
 
         let x = 0;
@@ -54,15 +85,6 @@ class Game {
                 x = 0;
             };
         }
-    }
-    drawIntroDialog() {
-        let ctx = this.context;
-
-        ctx.beginPath();
-        ctx.lineWidth = "6";
-        ctx.strokeStyle = "red";
-        ctx.rect(rect.x, rect.y, rect.width, rect.height);
-        ctx.stroke();
     }
 }
 
@@ -90,7 +112,13 @@ function withinRect(coord, targetRec) {
 function startGame() {
     let game = new Game();
     game.drawBackground();
-    game.drawIntroDialog();
+    game.dialogs.openDialogs([{
+        dialog: "intro",
+        onClose: null
+    }, {
+        dialog: "ready",
+        onClose: () => console.log("START!!!!")
+    }]);
 }
 
 startGame();
