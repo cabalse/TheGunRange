@@ -7,6 +7,8 @@
 const CANVAS_WIDTH = 814;
 const CANVAS_HEIGHT = 566;
 
+var game = null;
+
 const images = [{
         image: document.getElementById("background"),
         sx: 0,
@@ -36,25 +38,31 @@ const images = [{
     },
 ];
 
+const startDialogSequence = [{
+    dialog: "intro",
+    onClose: null
+}, {
+    dialog: "ready",
+    onClose: () => {
+        game.dialogs.disableCanvas();
+    }
+}];
+
 class Game {
     constructor() {
-        this.dialogs = new DialogEngine(CANVAS_WIDTH, CANVAS_HEIGHT, "canvas");
+        this.dialogs = new DialogEngine(CANVAS_WIDTH, CANVAS_HEIGHT);
         this.initCanvas();
         this.initEventListerners();
         this.backgroundDrawEngine = new DrawEngine(this.backgroundContext, images);
     }
     initCanvas() {
-        this.canvas = document.createElement("canvas");
-        this.canvas.width = CANVAS_WIDTH;
-        this.canvas.height = CANVAS_HEIGHT;
-        this.context = this.canvas.getContext("2d");
-        document.body.insertBefore(this.canvas, document.body.childNodes[0]);
+        let can = createCanvas(CANVAS_WIDTH, CANVAS_HEIGHT, document.body);
+        this.canvas = can.canvas;
+        this.context = can.context;
 
-        this.backgroundCanvas = document.createElement("canvas");
-        this.backgroundCanvas.width = CANVAS_WIDTH;
-        this.backgroundCanvas.height = CANVAS_HEIGHT;
-        this.backgroundContext = this.backgroundCanvas.getContext("2d");
-        document.body.insertBefore(this.backgroundCanvas, document.body.childNodes[0]);
+        let bak = createCanvas(CANVAS_WIDTH, CANVAS_HEIGHT, document.body);
+        this.backgroundCanvas = bak.canvas;
+        this.backgroundContext = bak.context;
     }
     initEventListerners() {
         this.canvas.addEventListener('click', playerClickedCanvas, false);
@@ -102,23 +110,10 @@ function playerClickedCanvas(event) {
     }, rect) ? "HIT" : "MISS");
 }
 
-function withinRect(coord, targetRec) {
-    return (coord.x >= targetRec.x &&
-        coord.x <= targetRec.x + targetRec.width &&
-        coord.y >= targetRec.y &&
-        coord.y <= targetRec.y + targetRec.height)
-}
-
 function startGame() {
-    let game = new Game();
+    game = new Game();
     game.drawBackground();
-    game.dialogs.openDialogs([{
-        dialog: "intro",
-        onClose: null
-    }, {
-        dialog: "ready",
-        onClose: () => console.log("START!!!!")
-    }]);
+    game.dialogs.openDialogs(startDialogSequence);
 }
 
 startGame();

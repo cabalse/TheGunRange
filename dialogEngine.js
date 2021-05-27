@@ -69,16 +69,17 @@ const dialogText = [{
 }]
 
 class DialogEngine {
-    constructor(width, height, placeholder) {
-        this.initCanvas(width, height, placeholder)
+    constructor(width, height) {
+        this.initCanvas(width, height)
         this.drawEngine = new DrawEngine(this.context, dialogImages);
     }
-    initCanvas(width, height, placeholder) {
-        this.canvas = document.createElement(placeholder);
-        this.canvas.width = width;
-        this.canvas.height = height;
-        this.context = this.canvas.getContext("2d");
-        document.body.insertBefore(this.canvas, document.body.childNodes[0]);
+    initCanvas(width, height) {
+        let can = createCanvas(width, height, document.body);
+        this.canvas = can.canvas;
+        this.context = can.context;
+    }
+    disableCanvas() {
+        this.canvas.style.display = "none";
     }
     getDialogInfo(name) {
         return dialogText.filter(item => item.name === name)[0];
